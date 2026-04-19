@@ -28,18 +28,10 @@ class RankingAgent:
                 score_trends = score
                 break
         
-        # Score YouTube
-        score_youtube = 0
-        for yt in youtube_data:
-            if artiste in yt.get("artiste", ""):
-                score_youtube = yt.get("score_youtube", 0)
-                break
-        
         # Score final pondéré
         score_final = (
-            score_spotify * self.poids["spotify"] +
-            score_youtube * self.poids["youtube"] +
-            score_trends * self.poids["google_trends"]
+            score_spotify * 0.60 +
+            score_trends * 0.40
         )
         
         # Bonus artiste CI +20%
@@ -53,6 +45,10 @@ class RankingAgent:
     
     def generer_top50(self, spotify_data, trends, youtube_data):
         print("🏆 Génération du Top 50...")
+        
+        if not spotify_data:
+            print("❌ Pas de données pour générer le Top 50")
+            return []
         
         for titre in spotify_data:
             titre["score_final"] = self.calculer_score(
